@@ -23,12 +23,12 @@ def upload_data(user_name,dir):
             sftp.put(dir+i,"/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"+i)
     sftp.close()
 @st.cache
-def download_data(user_name,dir):
-    keydata = st.Secrets["key"]
+def download_data(user_name,dir,s_key,s_host,s_user,s_pas):
+    keydata = s_key
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
-    cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
-    with pysftp.Connection(st.secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
+    cnopts.hostkeys.add(s_host, 'ssh-rsa', key) 
+    with pysftp.Connection(s_host, username=s_user, password=s_pas, cnopts=cnopts) as sftp:
         if sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             for i in sftp.listdir("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
                 print(i)
@@ -36,11 +36,15 @@ def download_data(user_name,dir):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
+    sec_key = st.Secrets["key"]
+    sec_host = st.secrets["host"]
+    sec_user = st.secrets["username"]
+    sec_pas = st.secrets["pas"]
     st.sidebar.markdown("** Attention! ** To avoid losing the data please upload data to the server before closing the app")
     work_dir = "./paintings/"+name+"/"
     if not os.path.exists(work_dir):
         os.mkdir(work_dir)  
-    download_data(name,work_dir)
+    download_data(name,work_dir,sec_key,sec_host,sec_user,sec_pas)
     try:
         image_name = state.file_list[state.n]
     except: 
