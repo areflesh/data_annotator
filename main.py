@@ -86,6 +86,6 @@ if (name!=''):
         state.n=state.n-1
     if st.sidebar.button("Upload data to server"):
         upload_data(name,work_dir)
-        st.write("Data uploaded correctly")
+        st.sidebar.write("Data uploaded correctly")
 
 
