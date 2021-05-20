@@ -10,8 +10,7 @@ from paramiko import RSAKey
 from base64 import decodebytes
 st.set_page_config(layout="wide")
 state = SessionState.get(n = 0, file_list=os.listdir("./paintings/images/"))
-@st.cache
-def create_folder(user_name):
+def upload_data(user_name,dir):
     keydata = b"""AAAAB3NzaC1yc2EAAAABIwAAAQEAvZYcvomQbQ72DDZtV3EHXCLHzlj4oSHwtp+9qhm3H3xSWxm0mVX3xgpLkljCtWycZYtKr8G8NqK97FL42r40W++LqjRkRpOzJ8SzkV+gh365FvouGhRSChMsnuCwyiAQnhCT1wfdadxh7/6+fm3RNFjoR3MMXsjabAztD+ZXcVJzTZ1Q4yRPV79Q2wa4zp3syrda1g1+3cLMlPwVGTTaPrhZwNnDYOM+C8PDr4cr88bHNkcAp2keINV9yZUNJzJNSrWg8g9sU9/e+ffd61n9jQDZlD2hasffkCeos92HNwkVgXws5xPo+kbuisFEIcybKu5Yrbb+U8RK9JCbd/2//w=="""
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
@@ -19,32 +18,31 @@ def create_folder(user_name):
     with pysftp.Connection('mt1.bsc.es', username='bsc21438', password='02t8q1uV', cnopts=cnopts) as sftp:
         if not sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             sftp.makedirs("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/")
+        for i in os.listdir(dir):
+            sftp.put(dir+i,"/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"+i)
     sftp.close()
-
 @st.cache
-def upload_file(original_file, dest_file):
+def download_data(user_name,dir):
     keydata = b"""AAAAB3NzaC1yc2EAAAABIwAAAQEAvZYcvomQbQ72DDZtV3EHXCLHzlj4oSHwtp+9qhm3H3xSWxm0mVX3xgpLkljCtWycZYtKr8G8NqK97FL42r40W++LqjRkRpOzJ8SzkV+gh365FvouGhRSChMsnuCwyiAQnhCT1wfdadxh7/6+fm3RNFjoR3MMXsjabAztD+ZXcVJzTZ1Q4yRPV79Q2wa4zp3syrda1g1+3cLMlPwVGTTaPrhZwNnDYOM+C8PDr4cr88bHNkcAp2keINV9yZUNJzJNSrWg8g9sU9/e+ffd61n9jQDZlD2hasffkCeos92HNwkVgXws5xPo+kbuisFEIcybKu5Yrbb+U8RK9JCbd/2//w=="""
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys.add('mt1.bsc.es', 'ssh-rsa', key) 
     with pysftp.Connection('mt1.bsc.es', username='bsc21438', password='02t8q1uV', cnopts=cnopts) as sftp:
-        sftp.put(original_file, dest_file)
+        if sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
+            for i in sftp.listdir("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
+                print(i)
+                sftp.get("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"+i, dir+i)
     sftp.close()
-
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
+    st.sidebar.markdown("** Attention! ** To avoid losing the data please upload data to the server after annotation")
     work_dir = "./paintings/"+name+"/"
     if not os.path.exists(work_dir):
-        os.mkdir(work_dir)
-
-    create_folder(name)   
+        os.mkdir(work_dir)  
+    download_data(name,work_dir)
     try:
         image_name = state.file_list[state.n]
     except: 
-        notification.notify(
-                    title = "Annotation is finished",
-                    message = "All images are annotated",  
-                    timeout  = 15)
         state.n = 0
         image_name = state.file_list[state.n]
     
@@ -71,7 +69,7 @@ if (name!=''):
     if annotation:
         col2.markdown(" ** BLEU Score: **"+str(len(annotation)))
     
-    if col2.button("Save data"):   
+    if col2.button("I like it! Save! "):   
         print(image_name)
         print(annotation)
         
@@ -80,11 +78,12 @@ if (name!=''):
 
         with open(work_dir+os.path.splitext(image_name)[0]+'.json', 'w') as json_file:
             json.dump(annot, json_file)
-        upload_file(work_dir+os.path.splitext(image_name)[0]+'.json',"/gpfs/home/bsc21/bsc21438/paintings/"+name+"/"+os.path.splitext(image_name)[0]+'.json')
         
     if col2.button("Next image",key = state.n):
         state.n=state.n+1
     if col2.button("Previous image",key = state.n):
         state.n=state.n-1
+    if st.sidebar.button("Upload data to server"):
+        upload_data(name,work_dir)
 
 
