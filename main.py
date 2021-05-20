@@ -16,7 +16,7 @@ def upload_data(user_name,dir):
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
-    with pysftp.Connection(st.secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
+    with pysftp.Connection(st.Secrets.Secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
         if not sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             sftp.makedirs("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/")
         for i in os.listdir(dir):
@@ -24,11 +24,11 @@ def upload_data(user_name,dir):
     sftp.close()
 @st.cache
 def download_data(user_name,dir):
-    keydata = st.Secrets["key"]
+    keydata = secret_key
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
-    cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
-    with pysftp.Connection(st.secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
+    cnopts.hostkeys.add(secret_host, 'ssh-rsa', key) 
+    with pysftp.Connection(secret_host, username=secret_username, password=secret_pas, cnopts=cnopts) as sftp:
         if sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             for i in sftp.listdir("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
                 print(i)
@@ -36,6 +36,10 @@ def download_data(user_name,dir):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
+    secret_key = st.secrets["key"]
+    secret_host = st.secrets["host"]
+    secret_username = st.secrets["username"]
+    secret_pas = st.secrets["pas"]
     st.sidebar.markdown("** Attention! ** To avoid losing the data please upload data to the server before closing the app")
     work_dir = "./paintings/"+name+"/"
     if not os.path.exists(work_dir):
