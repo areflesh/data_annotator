@@ -36,7 +36,7 @@ def download_data(user_name,dir,s_key,s_host,s_user,s_pas):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
-    sec_key = st.Secrets["key"]
+    sec_key = st.secrets["key"]
     sec_host = st.secrets["host"]
     sec_user = st.secrets["username"]
     sec_pas = st.secrets["pas"]
