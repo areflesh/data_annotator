@@ -8,6 +8,7 @@ import pysftp
 import paramiko
 from paramiko import RSAKey
 from base64 import decodebytes
+from nltk.translate.bleu_score import sentence_bleu
 st.set_page_config(layout="wide")
 state = SessionState.get(n = 0, file_list=os.listdir("./paintings/images/"))
 def upload_data(user_name,dir):
@@ -35,7 +36,7 @@ def download_data(user_name,dir):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
-    st.sidebar.markdown("** Attention! ** To avoid losing the data please upload data to the server after annotation")
+    st.sidebar.markdown("** Attention! ** To avoid losing the data please upload data to the server before closing the app")
     work_dir = "./paintings/"+name+"/"
     if not os.path.exists(work_dir):
         os.mkdir(work_dir)  
@@ -67,7 +68,7 @@ if (name!=''):
     
     annotation = col2.text_input("Input annotation:")
     if annotation:
-        col2.markdown(" ** BLEU Score: **"+str(len(annotation)))
+        col2.markdown(" ** BLEU Score: **"+str(sentence_bleu([meta_data["annot"].split(" ")],annotation.split(" "))))
     
     if col2.button("I like it! Save! "):   
         print(image_name)
@@ -85,5 +86,6 @@ if (name!=''):
         state.n=state.n-1
     if st.sidebar.button("Upload data to server"):
         upload_data(name,work_dir)
+        st.write("Data uploaded correctly")
 
 
