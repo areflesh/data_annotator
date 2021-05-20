@@ -12,11 +12,11 @@ from nltk.translate.bleu_score import sentence_bleu
 st.set_page_config(layout="wide")
 state = SessionState.get(n = 0, file_list=os.listdir("./paintings/images/"))
 def upload_data(user_name,dir):
-    keydata = st.Secrets["key"]
+    keydata = st.secrets["key"]
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
-    cnopts.hostkeys.add(st.Secrets["host"], 'ssh-rsa', key) 
-    with pysftp.Connection(st.Secrets["host"], username=st.Secrets["username"], password=st.Secrets["pas"], cnopts=cnopts) as sftp:
+    cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
+    with pysftp.Connection(st.secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
         if not sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             sftp.makedirs("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/")
         for i in os.listdir(dir):
@@ -27,8 +27,8 @@ def download_data(user_name,dir):
     keydata = st.Secrets["key"]
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
-    cnopts.hostkeys.add(st.Secrets["host"], 'ssh-rsa', key) 
-    with pysftp.Connection(st.Secrets["host"], username=st.Secrets["username"], password=st.Secrets["pas"], cnopts=cnopts) as sftp:
+    cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
+    with pysftp.Connection(st.secrets["host"], username=st.secrets["username"], password=st.secrets["pas"], cnopts=cnopts) as sftp:
         if sftp.exists("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
             for i in sftp.listdir("/gpfs/home/bsc21/bsc21438/paintings/"+user_name+"/"):
                 print(i)
