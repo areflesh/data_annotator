@@ -97,4 +97,4 @@ if (name!=''):
                     candidate sentence perfectly matches one of the reference sentences. <br><br>
                     The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) 
                     into another (the target).The greater the Levenshtein distance, the greater are the difference between the strings. 
-                    <b> Please take into account that not of all images have original captions. It means that for some images BLEU score will be equal to 0 and Levenshtein distance will be relatively high</b</p>>''')
+                    <b> Please take into account that not of all images have original captions. It means that for some images BLEU score will be equal to 0 and Levenshtein distance will be relatively high</b</p>''',unsafe_allow_html=True)
