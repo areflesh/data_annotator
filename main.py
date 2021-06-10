@@ -92,5 +92,9 @@ if (name!=''):
     if st.sidebar.button("Upload data to server"):
         upload_data(name,work_dir)
         st.sidebar.write("Data uploaded correctly")
-    col2.markdown("<p style='text-align: justify;'>The BLEU score compares a sentence against one or more reference sentences and tells how well does the candidate sentence matched the list of reference sentences. It gives an output score between 0 and 1. A BLEU score of 1 means that the candidate sentence perfectly matches one of the reference sentences. <b> Please take into account that not of all images have original captions. It means that for some images BLEU score will be equal to 0 </b></p>",unsafe_allow_html=True)
-    col2.markdown("The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) into another (the target).The greater the Levenshtein distance, the greater are the difference between the strings.")
+    col2.markdown('''<p style='text-align: justify;'>The BLEU score compares a sentence against one or more reference sentences and tells how well does the 
+                    candidate sentence matched the list of reference sentences. It gives an output score between 0 and 1. A BLEU score of 1 means that the 
+                    candidate sentence perfectly matches one of the reference sentences. <br><br>
+                    The distance value describes the minimal number of deletions, insertions, or substitutions that are required to transform one string (the source) 
+                    into another (the target).The greater the Levenshtein distance, the greater are the difference between the strings. 
+                    <b> Please take into account that not of all images have original captions. It means that for some images BLEU score will be equal to 0 and Levenshtein distance will be relatively high</b</p>>''')
