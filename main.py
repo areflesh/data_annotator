@@ -36,7 +36,7 @@ def download_data(user_name,dir,s_key,s_host,s_user,s_pas):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
-    sec_key = st.secrets["key"].encode()
+    sec_key = bytes(st.secrets["key"].encode())
     sec_host = st.secrets["host"]
     sec_user = st.secrets["username"]
     sec_pas = st.secrets["pas"]
@@ -67,7 +67,7 @@ if (name!=''):
         meta_data = json.load(json_file)
     
     col2.markdown('# Annotation')
-    col2.markdown("** Original caption: **"+meta_data["annot"])
+    #col2.markdown("** Original caption: **"+meta_data["annot"])
     col2.markdown("** Provided caption: **"+provided_des)
     
     annotation = col2.text_input("Input annotation:")
