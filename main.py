@@ -8,6 +8,7 @@ import pysftp
 import paramiko
 from paramiko import RSAKey
 from base64 import decodebytes
+from Levenshtein import distance
 from nltk.translate.bleu_score import sentence_bleu
 st.set_page_config(layout="wide")
 state = SessionState.get(n = 0, file_list=os.listdir("./paintings/images/"))
@@ -73,7 +74,7 @@ if (name!=''):
     annotation = col2.text_input("Input annotation:")
     if annotation:
         col2.markdown(" ** BLEU Score: **"+str(sentence_bleu([meta_data["annot"].split(" ")],annotation.split(" "))))
-    
+        col2.markdown(" ** LEV distance: **"+str(distance(meta_data["annot"],annotation)))
     if col2.button("I like it! Save! "):   
         print(image_name)
         print(annotation)
