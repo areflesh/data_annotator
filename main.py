@@ -12,7 +12,7 @@ from nltk.translate.bleu_score import sentence_bleu
 st.set_page_config(layout="wide")
 state = SessionState.get(n = 0, file_list=os.listdir("./paintings/images/"))
 def upload_data(user_name,dir):
-    keydata = st.secrets["key"]
+    keydata = st.secrets["key"].encode()
     key = paramiko.RSAKey(data=decodebytes(keydata))
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys.add(st.secrets["host"], 'ssh-rsa', key) 
@@ -36,7 +36,7 @@ def download_data(user_name,dir,s_key,s_host,s_user,s_pas):
     sftp.close()
 name = st.sidebar.text_input("Input your name and press Enter please:","")
 if (name!=''):
-    sec_key = bytes(st.secrets["key"].encode())
+    sec_key = st.secrets["key"].encode()
     sec_host = st.secrets["host"]
     sec_user = st.secrets["username"]
     sec_pas = st.secrets["pas"]
