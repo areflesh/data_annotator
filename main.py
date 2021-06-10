@@ -74,7 +74,7 @@ if (name!=''):
     annotation = col2.text_input("Input annotation:")
     if annotation:
         col2.markdown(" ** BLEU Score: **"+str(sentence_bleu([meta_data["annot"].split(" ")],annotation.split(" "))))
-        col2.markdown(" ** LEV distance: **"+str(distance(meta_data["annot"],annotation)))
+        col2.markdown(" ** Levenshtein distance: **"+str(distance(meta_data["annot"],annotation)))
     if col2.button("I like it! Save! "):   
         print(image_name)
         print(annotation)
